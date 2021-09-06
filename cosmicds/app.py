@@ -21,6 +21,7 @@ from .components.footer import Footer
 from .components.viewer_layout import ViewerLayout
 from .utils import load_template, update_figure_css
 from .components.dialog import Dialog
+from .components.galaxy_analysis import GalaxyAnalysis
 
 # Within ipywidgets - update calls only happen in certain instances.
 # Tom added this glue state to allow 2-way binding and force communication that we want explicitly controlled between front end and back end.
@@ -39,9 +40,6 @@ class ApplicationState(State):
     dist_measured = CallbackProperty(0)
     marker_set = CallbackProperty(0)
     vel_measured = CallbackProperty(0)
-    adddata_disabled = CallbackProperty(1)
-    prev1_disabled = CallbackProperty(1)
-    next1_disabled = CallbackProperty(1)
 
     haro_on = CallbackProperty("d-none")
     marker_on = CallbackProperty("d-none")
@@ -67,7 +65,8 @@ class Application(VuetifyTemplate):
         # Load the vue components through the ipyvuetify machinery. We add the
         # html tag we want and an instance of the component class as a
         # key-value pair to the components dictionary.
-        self.components = {'c-footer': Footer(self)
+        self.components = {'c-footer': Footer(self),
+                           'c-galaxy-analysis': GalaxyAnalysis(self)
                         # THE FOLLOWING REPLACED WITH video_dialog.vue component in data/vue_components
                         #    'c-dialog-vel': Dialog(
                         #        self,
@@ -108,12 +107,6 @@ class Application(VuetifyTemplate):
         # Image viewer used for the 2D spectrum selection
         image_viewer = self._application_handler.new_data_viewer(
             BqplotImageView, data=None, show=False)
-
-        # Scatter viewer used for the display of the measured galaxy data
-        hub_const_viewer = self._application_handler.new_data_viewer(
-            BqplotScatterView, data=None, show=False)
-        hub_fit_viewer = self._application_handler.new_data_viewer(
-            BqplotScatterView, data=None, show=False)
 
         # Create a subset for each student
         student_data = self.data_collection['HubbleData_ClassSample']
