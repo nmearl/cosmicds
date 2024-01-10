@@ -10,7 +10,7 @@
       <v-switch
         v-for="(stat, index) in statistics"
         v-model="selected"
-        :key="index"
+        :key="'stat-' + index"
         :value="stat"
         :color="color"
         @click.native.stop.prevent="resetIfNeeded(stat)"

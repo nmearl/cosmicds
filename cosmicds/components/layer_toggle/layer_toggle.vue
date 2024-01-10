@@ -12,7 +12,7 @@
     >
       <v-list-item
         v-for="(layer, index) in layers"
-        :key="index"
+        :key="'layer-' + index"
         :value="index"
         inactive
       >

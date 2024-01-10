@@ -10,7 +10,7 @@
     >
       <v-radio
         v-for="[index, option] of radioOptions.entries()"
-        :key="index"
+        :key="'option-' + index"
         :color="`${color(index)} lighten-1`"
         @change="selectChoice(index)"
       >

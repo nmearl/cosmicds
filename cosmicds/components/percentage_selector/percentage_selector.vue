@@ -10,7 +10,7 @@
       <v-switch
         v-for="(option, index) in options"
         v-model="selected"
-        :key="index"
+        :key="'option-' + index"
         :value="option"
         :color="radio_color"
         @click.native.stop.prevent="resetIfNeeded(option)"
