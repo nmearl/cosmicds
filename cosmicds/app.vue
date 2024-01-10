@@ -153,7 +153,7 @@
       >
         <template v-for="(stage, key, index) in story_state.stages">
           <v-stepper-step
-            :key="index"
+            :key="'idx-' + index"
             :editable="app_state.allow_advancing || index == 0 || story_state.max_stage_index >= index"
             :complete="story_state.max_stage_index > index"
             :step="index"
@@ -172,7 +172,7 @@
               >
                 <v-list-item
                   v-for="(step, i) in story_state.stages[key].steps"
-                  :key="i"
+                  :key="'step'-i"
                   :disabled="i > 0 && !story_state.stages[key].steps[i-1].completed"
                 >
                   <v-list-item-action>
@@ -234,7 +234,7 @@
         <v-tabs-items v-model="story_state.stage_index">
           <v-tab-item
             v-for="(stage, key, index) in story_state.stages"
-            :key="index"
+            :key="'stage-' + index"
           >
             <v-card flat>
               <v-card-title style="display: none;">{{ stage.title }}</v-card-title>
@@ -279,7 +279,7 @@
     </v-footer>
       <v-snackbar
         v-model="show_snackbar"
-        timeout="200000"
+        :timeout="-1"
         transition="fab-transition"
         top
         center
@@ -299,9 +299,7 @@
         <v-btn
           color="accent"
           class="mx-4 black--text"
-          @click="{
-            show_snackbar=false;
-          }"
+          @click="show_snackbar=false"
         >
           Close
         </v-btn>
@@ -312,23 +310,6 @@
 <script>
 export default {
   async mounted() {
-    // NOTE: THIS IS ONLY VALID FOR CONTAINDS USAGE
-    // The environment does not always reflect the actual user account that's
-    // using the app, so fetch the current user info
-    var vm = this;
-    fetch(
-        '/hub/dashboards-api/hub-info/user',
-        {
-            mode: 'no-cors',
-            credentials: 'same-origin',
-            headers: new Headers({'Access-Control-Allow-Origin':'*'})
-        }
-    ).then(response=>response.json())
-    .then(data=>{
-        console.log(data);
-        vm.hub_user_info = data;
-    });
-
     // We ultimately don't want to expose this
     // It's just for testing purposes
     window.cdsApp = this;
