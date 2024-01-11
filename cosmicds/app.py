@@ -77,9 +77,7 @@ class Application(VuetifyTemplate, HubListener):
 
         username = self.hub_user_info.get('name', getenv("JUPYTERHUB_USER"))
 
-        print(username)
         r = self.request_session.get(f"{API_URL}/student/{username}")
-        print(r.json())
         student = r.json()["student"]
 
         if student is None:
@@ -91,12 +89,10 @@ class Application(VuetifyTemplate, HubListener):
                 "email": self.hub_user_info['name'],
                 'age': 0,
                 'gender': "undefined",
-                'classroomCode': "213" #self.hub_user_info['class_code']
+                'classroomCode': self.hub_user_info['class_code']
             })
-            print(r.json())
 
         r = self.request_session.get(f"{API_URL}/student/{username}")
-        print(r.json())
         student = r.json()["student"]
 
         self.app_state.student = student
