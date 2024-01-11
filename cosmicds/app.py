@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from os import getenv
 from requests.adapters import HTTPAdapter
 
@@ -49,7 +50,7 @@ class Application(VuetifyTemplate, HubListener):
     hub_user_loaded = Bool(False).tag(sync=True)
     loading_status_message = Unicode("No message").tag(sync=True)
 
-    def __init__(self, story, *args, **kwargs):
+    def __init__(self, story, *args, user_info=None, **kwargs):
         super().__init__(*args, **kwargs)
 
         register_vue_components()
@@ -67,40 +68,46 @@ class Application(VuetifyTemplate, HubListener):
         # comment to display the UI message in the console
         self.observe(lambda change: log_to_console(change['new'], css="color:pink;"), 'loading_status_message')
 
-        self._setup(story, **kwargs)
+        if user_info is not None:
+            self.hub_user_info = user_info
+            self._setup(story, **kwargs)
 
     def _setup(self, story, **kwargs):
         db_init = False
 
-        create_new = kwargs.get("create_new_student", False)
+        username = self.hub_user_info.get('name', getenv("JUPYTERHUB_USER"))
 
-        if create_new:
-            self.loading_status_message = "Creating new dummy student..."
-            response = self.request_session.get(f"{API_URL}/new-dummy-student").json()
-            self.app_state.student = response["student"]
-            self.app_state.classroom["id"] = 0
-            self.student_id = self.app_state.student["id"]
-            db_init = True
-        else:
-            username = self.hub_user_info.get('name', getenv("JUPYTERHUB_USER"))
-            
-            self.loading_status_message = f"Loading student information for {username}..."
+        print(username)
+        r = self.request_session.get(f"{API_URL}/student/{username}")
+        print(r.json())
+        student = r.json()["student"]
 
-            if username is not None:
-                r = self.request_session.get(f"{API_URL}/student/{username}")
-                student = r.json()["student"]
-                if student is not None:
-                    self.app_state.student = student
-                    self.student_id = student["id"]
-                else:
-                    self.loading_status_message = "Student not found for username"
-            else:
-                self.loading_status_message = "Username was None"
+        if student is None:
+            # Create new user based on username and class code
+            r = self.request_session.post(f"{API_URL}/student-sign-up", json={
+                'username': self.hub_user_info['name'],
+                'password': "",
+                "institution": "",
+                "email": self.hub_user_info['name'],
+                'age': 0,
+                'gender': "undefined",
+                'classroomCode': "213" #self.hub_user_info['class_code']
+            })
+            print(r.json())
 
-            if not self.app_state.student:
-                sid = kwargs.get("student_id", 0)
-                self.app_state.student["id"] = sid
-                self.student_id = sid
+        r = self.request_session.get(f"{API_URL}/student/{username}")
+        print(r.json())
+        student = r.json()["student"]
+
+        self.app_state.student = student
+        self.student_id = student["id"]
+
+        self.loading_status_message = f"Loading student information for {username}..."
+
+        if not self.app_state.student:
+            sid = kwargs.get("student_id", 0)
+            self.app_state.student["id"] = sid
+            self.student_id = sid
         
         self.loading_status_message = f"Loading class information for student {self.student_id}..."
         class_response = self.request_session.get(f"{API_URL}/class-for-student-story/{self.student_id}/{story}")
