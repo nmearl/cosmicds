@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="cosmicds-app">
     <v-overlay :value="!hub_user_loaded"
       opacity="0.75"
       z-index=1000>
@@ -75,7 +75,7 @@
             v-bind="attrs"
             v-on="on"
             @click="
-              app_state.dark_mode = !app_state.dark_mode
+              toggleDarkMode
             "
           >
             <v-icon>mdi-brightness-4</v-icon>
@@ -229,8 +229,8 @@
     </v-navigation-drawer>
     -->
 
-    <v-content>
-      <v-container fluid style="height: calc(100vh - 96px); overflow-y: auto;">
+    <v-main>
+      <v-container fluid>
         <v-tabs-items v-model="story_state.stage_index">
           <v-tab-item
             v-for="(stage, key, index) in story_state.stages"
@@ -243,7 +243,7 @@
           </v-tab-item>
         </v-tabs-items>
       </v-container>
-    </v-content>
+    </v-main>
 
     <v-footer
       app
@@ -312,7 +312,7 @@ export default {
   async mounted() {
     // We ultimately don't want to expose this
     // It's just for testing purposes
-    window.cdsApp = this;
+    // window.cdsApp = this;
 
     const app = this;
     if (!window.customElements.get("cds-input")) {
@@ -567,6 +567,9 @@ export default {
     document.addEventListener("fr-initialize", this.handleFRInitialization);
   },
   methods: {
+    toggleDarkMode() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+    },
     getCurrentStage: function () {
       return this.$data.story_state.stages[this.$data.story_state.stage_index];
     },
@@ -640,6 +643,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 td:first-child, th:first-child {
@@ -700,12 +704,12 @@ textarea {
 
 #cosmicds-app {
   height: 100%;
-}
-
-#app {
-  height: 100vh;
   margin: 0;
   padding: 0;
+}
+
+.v-application--wrap > div:nth-child(2) > div:nth-child(2){
+    display: none !important;
 }
 
 .bqplot {
