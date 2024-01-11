@@ -19,14 +19,16 @@ module.exports = {
   props: {
     selectors: {
       type: Array,
-      default: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', ':not(mjx-assistive-mml) > mjx-container']
+      default() {
+        return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', ':not(mjx-assistive-mml) > mjx-container']
+      }
     },
     stopOnClose: {
       type: Boolean,
       default: true
     },
     root: {
-      type: [Object, Function],
+      type: [Object, Function, HTMLDivElement],
       default: null
     },
     elementFilter: {

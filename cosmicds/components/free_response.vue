@@ -56,7 +56,7 @@ module.exports = {
     },
     rules: {
       type: Array, // Should be an array of functions with signature (string) => bool
-      default: []
+      default() { return [] }
     },
     tag: String,
     type: {

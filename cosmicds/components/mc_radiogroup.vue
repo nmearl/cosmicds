@@ -63,7 +63,7 @@ module.exports = {
     feedbacks: Array,
     correctAnswers: {
       type: Array,
-      default: []
+      default() { return [] }
     },
     scoring: {
       type: Boolean,
@@ -71,7 +71,7 @@ module.exports = {
     },
     neutralAnswers: {
       type: Array,
-      default: []
+      default () { return [] }
     },
     points: {
       type: [Array, Function],
