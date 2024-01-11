@@ -1,5 +1,5 @@
 <template>
-  <v-app id="cosmicds-app">
+  <div id="cosmicds-app">
     <v-overlay :value="!hub_user_loaded"
       opacity="0.75"
       z-index=1000>
@@ -120,8 +120,8 @@
 
     <v-navigation-drawer v-model="drawer" app width="250">
       <!-- TODO: This should be a built-in prop, but border radius requires explicit style def... -->
-      <v-sheet height="60" width="100%" style="border-radius: 0px">
-        <v-list class="ma-0 pa-0">
+      <v-sheet height="60" width="100%" class="mb-3" tile>
+        <v-list class="ma-0 pa-0" tile>
           <v-list-item>
             <v-list-item-action
               class="mr-3"
@@ -129,7 +129,7 @@
               <v-avatar
                 color="warning"
               >
-                <v-icon dark>mdi-account-circle</v-icon>
+                <v-icon dark small>mdi-account-circle</v-icon>
               </v-avatar>
             </v-list-item-action>
 
@@ -149,7 +149,9 @@
         flat
         non-linear
         class="elevation-0"
+        tile
         @change="story_state.step_index = story_state.stages[story_state.stage_index].step_index"
+        style="border-radius: 0px; padding-bottom: 0px;"
       >
         <template v-for="(stage, key, index) in story_state.stages">
           <v-stepper-step
@@ -163,9 +165,9 @@
             {{ stage.title }}
           </v-stepper-step>
 
-          <v-stepper-content :key="index" :step="index" class="my-0 py-0">
+          <v-stepper-content :key="index" :step="index">
             <!-- Section containing each stage's individual steps -->
-            <v-list dense nav>
+            <v-list dense nav v-show="story_state.stages[key].steps.length > 0">
               <v-list-item-group
                 v-model="story_state.step_index"
                 color="info"
@@ -231,15 +233,15 @@
 
     <v-main>
       <v-container fluid>
-        <v-tabs-items v-model="story_state.stage_index">
+        <v-tabs-items v-model="story_state.stage_index" style="background: none">
           <v-tab-item
             v-for="(stage, key, index) in story_state.stages"
             :key="'stage-' + index"
           >
-            <v-card flat>
+<!--            <v-card flat>-->
               <v-card-title style="display: none;">{{ stage.title }}</v-card-title>
               <jupyter-widget :widget="stage.model_id"/>
-            </v-card>
+<!--            </v-card>-->
           </v-tab-item>
         </v-tabs-items>
       </v-container>
@@ -304,7 +306,7 @@
           Close
         </v-btn>
       </v-snackbar>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -646,9 +648,9 @@ body {
   overflow: hidden;
 }
 
-td:first-child, th:first-child {
-  min-width: 180px!important;
-}
+//td:first-child, th:first-child {
+//  min-width: 180px!important;
+//}
 
 td.text-start {
   padding: 8px 16px!important;
@@ -676,9 +678,9 @@ td.text-start {
   font-size: 18px !important;
 }
 
-.v-navigation-drawer .v-list-item__action {
-  margin: 10px 10px 10px 0px !important;
-}
+//.v-navigation-drawer .v-list-item__action {
+//  margin: 10px 10px 10px 0px !important;
+//}
 
 label.v-label--active div {
   color: white!important;
@@ -703,7 +705,6 @@ textarea {
 }
 
 #cosmicds-app {
-  height: 100%;
   margin: 0;
   padding: 0;
 }
