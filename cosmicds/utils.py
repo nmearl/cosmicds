@@ -17,6 +17,9 @@ from threading import Timer
 from traitlets import Unicode
 from zmq.eventloop.ioloop import IOLoop
 
+from pathlib import Path
+import ipyvue
+
 __all__ = [
     'load_template', 'update_figure_css', 'extend_tool',
     'convert_material_color', 'fit_line', 
@@ -27,6 +30,17 @@ __all__ = [
 
 # The URL for the CosmicDS API
 API_URL = "https://api.cosmicds.cfa.harvard.edu"
+
+
+# Register any custom Vue components
+def register_vue_components():
+    comp_dir = Path(__file__).parent / "components"
+
+    for comp_path in comp_dir.iterdir():
+        if comp_path.is_file and comp_path.suffix == ".vue":
+            ipyvue.register_component_from_string(
+                name=comp_path.stem.replace('_', '-'),
+                value=comp_path.read_text())
 
 
 # JC: I got parts of this from https://stackoverflow.com/a/57915246

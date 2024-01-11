@@ -16,7 +16,7 @@ from traitlets import Dict, Bool, Int, Unicode
 
 from .events import WriteToDatabaseMessage
 from .registries import story_registry
-from .utils import CDSJSONEncoder, debounce, load_template, request_session, log_to_console, combine_css, LoggingAdapter
+from .utils import CDSJSONEncoder, debounce, load_template, request_session, log_to_console, combine_css, LoggingAdapter, register_vue_components
 
 v.theme.dark = True
 
@@ -51,6 +51,8 @@ class Application(VuetifyTemplate, HubListener):
 
     def __init__(self, story, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        register_vue_components()
 
         self.app_state = ApplicationState()
 
