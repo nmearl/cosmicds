@@ -95,6 +95,8 @@ def BaseSetup(
                 }
             )
         else:
+            Ref(GLOBAL_STATE.fields.update_db).set(False)
+
             auth.user.set(
                 {
                     "userinfo": {
