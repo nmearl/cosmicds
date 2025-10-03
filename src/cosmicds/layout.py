@@ -218,16 +218,19 @@ def BaseLayout(
         )
 
         rv.Html(tag="h2", children=["Hubble's Law"], class_="pl-5")
-        # rv.Html(
-        #     tag="h4",
-        #     children=["Cosmic Data Story"],
-        #     class_="ml-8 app-title",
-        # )
+
         if GLOBAL_STATE.value.educator:
             rv.Html(
                 tag="h3",
                 class_="ml-8 app-title",
                 children=["Educator Mode"],
+                style_="color: #8e8e8e; font-size: 1.5em; font-weight: bold;",
+            )
+        if GLOBAL_STATE.value.force_demo:
+            rv.Html(
+                tag="h3",
+                class_="ml-8 app-title",
+                children=["Demo Mode"],
                 style_="color: #8e8e8e; font-size: 1.5em; font-weight: bold;",
             )
         rv.Spacer()
