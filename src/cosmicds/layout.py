@@ -33,10 +33,12 @@ logger = setup_logger("LAYOUT")
 
 
 def BaseSetup(
-    force_demo: bool = False,
     story_name: str = "",
     story_title: str = "Cosmic Data Story",
 ):
+    # Retrieve whether to force demo mode
+    force_demo_ref = Ref(GLOBAL_STATE.fields.force_demo)
+
     active = solara.use_reactive(False)
     class_code = solara.use_reactive("")
     update_db = solara.use_reactive(False)
@@ -70,13 +72,13 @@ def BaseSetup(
     educator_mode = False
     if bool(auth.user.value):
         if BASE_API.is_educator:
-            force_demo = True
             educator_mode = True
+            force_demo_ref.set(True)
             Ref(GLOBAL_STATE.fields.update_db).set(False)
             Ref(GLOBAL_STATE.fields.show_team_interface).set(True)
             Ref(GLOBAL_STATE.fields.educator).set(True)
 
-    if force_demo:
+    if force_demo_ref.value:
         logger.info("Loading app in demo mode.")
         if educator_mode:
             auth.user.set(
